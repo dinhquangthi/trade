@@ -11,12 +11,6 @@
       <v-toolbar
         flat
       >
-        <v-divider
-          class="mx-4"
-          inset
-          vertical
-        ></v-divider>
-        <v-spacer></v-spacer>
         <v-dialog
           v-model="dialog"
           max-width="500px"
@@ -46,8 +40,7 @@
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.name"
-                      label="Dessert name"
+                      v-model="editedItem.coin"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -56,8 +49,7 @@
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.calories"
-                      label="Calories"
+                      v-model="editedItem.entry"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -66,8 +58,7 @@
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.fat"
-                      label="Fat (g)"
+                      v-model="editedItem.take_profit"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -76,8 +67,7 @@
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.carbs"
-                      label="Carbs (g)"
+                      v-model="editedItem.stop_loss"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -86,8 +76,16 @@
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.protein"
-                      label="Protein (g)"
+                      v-model="editedItem.market"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.rate"
                     ></v-text-field>
                   </v-col>
                 </v-row>

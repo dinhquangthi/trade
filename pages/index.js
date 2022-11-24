@@ -1,173 +1,155 @@
+/* eslint-disable */
+
+import db from "../plugins/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import { Timestamp } from "@firebase/firestore";
+
 export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
     headers: [
       {
-        text: 'Dessert (100g serving)',
-        align: 'start',
+        align: "start",
         sortable: false,
-        value: 'name'
+        value: "coin",
       },
-      { text: 'Calories', value: 'calories' },
-      { text: 'Fat (g)', value: 'fat' },
-      { text: 'Carbs (g)', value: 'carbs' },
-      { text: 'Protein (g)', value: 'protein' },
-      { text: 'Actions', value: 'actions', sortable: false }
+      { text: "Vo", value: "volume" },
+      { text: "Ent", value: "entry" },
+      { text: "TP", value: "take_profit" },
+      { text: "SL", value: "stop_loss" },
+      { text: "Market", value: "market" },
+      { text: "R/R", value: "rate" },
+      { text: "W", value: "win" },
+      { text: "L", value: "lose" },
+      { text: "L/S", value: "position" },
+      { text: "Status", value: "status" },
+      { text: "Day Start", value: "date_start" },
+      { text: "Day End", value: "date_end" },
+      { text: "Total", value: "total" },
+      { text: "Actions", value: "actions", sortable: false },
     ],
     desserts: [],
     editedIndex: -1,
     editedItem: {
-      name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0
+      volume: 0,
+      entry: 0,
+      take_profit: 0,
+      stop_loss: 0,
+      market: 0,
     },
     defaultItem: {
-      name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0
-    }
+      volume: 0,
+      entry: 0,
+      take_profit: 2,
+      stop_loss: 1,
+      market: 1,
+      rate: 2,
+      win: 3,
+      lose: -2,
+      position: "lo",
+      status: "open",
+      date_start: " 22/11/2022",
+      date_end: " 22/11/2022",
+      total: 5,
+    },
   }),
 
   computed: {
-    formTitle () {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-    }
+    formTitle() {
+      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+    },
   },
 
   watch: {
-    dialog (val) {
-      val || this.close()
+    dialog(val) {
+      val || this.close();
     },
-    dialogDelete (val) {
-      val || this.closeDelete()
-    }
+    dialogDelete(val) {
+      val || this.closeDelete();
+    },
   },
 
-  created () {
-    this.initialize()
+  created() {
+    this.handle();
   },
 
   methods: {
-    initialize () {
-      this.desserts = [
-        {
-          name: 'Frozen Yogurt',
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0
-        },
-        {
-          name: 'Ice cream sandwich',
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3
-        },
-        {
-          name: 'Eclair',
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0
-        },
-        {
-          name: 'Cupcake',
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3
-        },
-        {
-          name: 'Gingerbread',
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9
-        },
-        {
-          name: 'Jelly bean',
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0
-        },
-        {
-          name: 'Lollipop',
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0
-        },
-        {
-          name: 'Honeycomb',
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5
-        },
-        {
-          name: 'Donut',
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9
-        },
-        {
-          name: 'KitKat',
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7
-        }
-      ]
-    },
-
-    editItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialog = true
-    },
-
-    deleteItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialogDelete = true
-    },
-
-    deleteItemConfirm () {
-      this.desserts.splice(this.editedIndex, 1)
-      this.closeDelete()
-    },
-
-    close () {
-      this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
-    closeDelete () {
-      this.dialogDelete = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
-    save () {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem)
-      } else {
-        this.desserts.push(this.editedItem)
+    async handle() {
+      try {
+        const querySnapshot = await getDocs(collection(db, "transaction"));
+        querySnapshot.forEach((doc) => {
+          console.log(doc.data());
+          const dateStart =  this.convertTimestap( doc.data().date_start.seconds,doc.data().date_start.nanoseconds)
+            this.desserts = [
+              {
+                coin:  doc.data().coin,
+                volume: doc.data().volume,
+                entry: doc.data().entry,
+                take_profit: doc.data().take_profit,
+                stop_loss: doc.data().stop_loss,
+                market: doc.data().market,
+                rate: 2,
+                win: 3,
+                lose: -2,
+                position: doc.data().position,
+                status: "open",
+                date_start: dateStart,
+                date_end: " 22/11/2022",
+                total: doc.data().total,
+              },
+            ];
+        });
+      } catch (error) {
+        console.log(error);
       }
-      this.close()
-    }
-  }
-}
+    },
+
+    convertTimestap(sec,nano)  {
+      const datetime = new Timestamp(sec,nano).toDate
+      return datetime
+    },
+
+    editItem(item) {
+      this.editedIndex = this.desserts.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+    },
+
+    deleteItem(item) {
+      this.editedIndex = this.desserts.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
+
+    deleteItemConfirm() {
+      this.desserts.splice(this.editedIndex, 1);
+      this.closeDelete();
+    },
+
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    closeDelete() {
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    save() {
+      if (this.editedIndex > -1) {
+        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+      } else {
+        this.desserts.push(this.editedItem);
+      }
+      this.close();
+    },
+  },
+};
