@@ -7,7 +7,7 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s',
-    title: 'my-app',
+    title: 'Trading',
     htmlAttrs: {
       lang: 'en'
     },
@@ -47,6 +47,10 @@ export default {
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: '/'
+  },
+  server: {
+    host: '192.168.110.133',
+    port: 4000
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
