@@ -39,7 +39,81 @@
       </template>
       <template #top>
         <v-dialog v-model="dialog" max-width="800px">
-          <EditItem />
+          <v-card>
+            <v-form>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-text-field v-model="editedItem.coin" label="Coin" />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-select
+                        v-model="editedItem.position"
+                        :items="items"
+                        label="Position"
+                      />
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="2">
+                      <v-text-field v-model="editedItem.volume" label="Volume" />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="2">
+                      <v-text-field v-model="editedItem.entry" label="Entry" />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="2">
+                      <v-text-field
+                        v-model="editedItem.take_profit"
+                        label="Take Profit"
+                      />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="2">
+                      <v-text-field
+                        v-model="editedItem.stop_loss"
+                        label="Stop Loss"
+                      />
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-text-field v-model="editedItem.market" label="Market" />
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      R/R
+                      <p class="font-weight-bold">
+                        {{ calcRate }}
+                      </p>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      WIN
+                      <p class="font-weight-bold green--text">
+                        {{ calcWin }}
+                      </p>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      LOSE
+                      <p class="font-weight-bold red--text">
+                        {{ calcLose }}
+                      </p>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer />
+                <v-btn color="blue darken-1" text @click="close">
+                  Cancel
+                </v-btn>
+                <v-btn color="blue darken-1" text @click="saveItem">
+                  Add
+                </v-btn>
+              </v-card-actions>
+            </v-form>
+          </v-card>
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>

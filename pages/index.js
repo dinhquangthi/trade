@@ -20,13 +20,11 @@ import db from "../plugins/firebase";
 
 import TimeLine from "@/components/TimeLine.vue";
 import AddItem from "@/components/AddItem.vue";
-import EditItem from "@/components/EditItem.vue";
 
 export default {
   components: {
     TimeLine,
     AddItem,
-    EditItem,
   },
 
   data: () => ({
@@ -53,6 +51,17 @@ export default {
       { text: "Total", value: "total", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
     ],
+    editedItem: {
+      coin: null,
+      volume: null,
+      entry: null,
+      take_profit: null,
+      stop_loss: null,
+      market: null,
+      lose: null,
+      position: null,
+      status: "",
+    },
     desserts: [],
     items: ["LONG", "SHORT"],
     menu: false,
@@ -96,9 +105,7 @@ export default {
   created() {
     this.initData();
   },
-  mounted() {
-    // this.$store.dispatch("fetchData");
-  },
+ 
   methods: {
     async initData() {
       try {
@@ -121,7 +128,27 @@ export default {
     itemRowBackground(item) {
       return item.status === false ? "bg-disable" : "";
     },
-
+    async saveItem() {
+      const objectNew = {
+        coin: this.editedItem.coin,
+        status: true,
+        date_start: this.editedItem.date_start,
+        entry: this.editedItem.entry,
+        take_profit: this.editedItem.take_profit,
+        stop_loss: this.editedItem.stop_loss,
+        market: this.editedItem.market ? this.editedItem.market : 0,
+        volume: this.editedItem.volume,
+        position: this.editedItem.position,
+      };
+      try {
+        this.enableLoading();
+        await addDoc(collection(db, "transaction"), objectNew);
+        this.close();
+        this.disableLoading();
+      } catch (error) {
+        console.log(error);
+      }
+    },
     deleteItem(item) {
       this.idDelete = item;
       this.dialogDelete = true;
@@ -153,10 +180,10 @@ export default {
 
     async updateData(key, obj) {
       try {
-        // this.enableLoading();
+        this.enableLoading();
         const dbRef = doc(db, "transaction", key);
         await updateDoc(dbRef, obj);
-        // this.disableLoading();
+        this.disableLoading();
       } catch (error) {
         console.log(error);
       }
