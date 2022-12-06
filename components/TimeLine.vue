@@ -2,7 +2,7 @@
   <div class="d-flex flex-wrap">
     <v-card v-for="n in 10" :key="n" class="ma-4" max-width="344">
       <v-img
-        src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+        :src="`https://picsum.photos/200/300?random=${n}`"
         height="200px"
       />
 

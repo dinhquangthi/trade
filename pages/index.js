@@ -6,6 +6,7 @@ import {
   caculateLose,
   convertTimestap,
   generateData,
+  caculate,
 } from "@/plugins/caculate";
 import {
   collection,
@@ -48,7 +49,7 @@ export default {
       { text: "LOSE", value: "lose", sortable: false },
       { text: "Status", value: "status", sortable: false },
       { text: "Day Start", value: "date_start" },
-      { text: "Total", value: "total", sortable: false },
+      { text: "ROE", value: "roe", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
     ],
     editedItem: {
@@ -68,29 +69,69 @@ export default {
   }),
 
   computed: {
-    calcWin() {
-      let win = 0;
-      win = Math.abs(
-        ((this.editedItem.entry - this.editedItem.take_profit) /
-          this.editedItem.entry) *
-          this.editedItem.volume
-      );
-      return Math.floor(win);
+    caculate() {
+      // position = true => LONG
+      // position = false => SHORT
+
+      let win, lose, roe;
+      let vol = this.editedItem.volume;
+      let entry = this.editedItem.entry;
+      let tp = this.editedItem.take_profit;
+      let sl = this.editedItem.stop_loss;
+      let market = this.editedItem.market;
+      let position;
+      if (this.editedItem.position === "LONG") {
+        position = true;
+      } else {
+        position = false;
+      }
+
+      if (!market || market === 0) {
+        win = Math.abs(((entry - tp) / entry) * vol);
+        lose = Math.abs(((entry - sl) / entry) * vol);
+        roe = 0;
+      } else {
+        if (position === true) {
+          win = Math.abs(((entry - tp) / entry) * vol);
+          lose = ((sl - entry) / entry) * vol;
+          roe = ((market - entry) / entry) * vol;
+        } else {
+          win = Math.abs(((entry - tp) / entry) * vol);
+          lose = ((entry - sl) / entry) * vol;
+          roe = ((entry - market) / entry) * vol;
+        }
+      }
+
+      return {
+        win: Math.floor(win),
+        lose: Math.floor(lose),
+        roe: Math.floor(roe),
+        rate: Math.abs(win / lose).toFixed(2),
+      };
     },
-    calcLose() {
-      let lose = 0;
-      lose = -Math.abs(
-        ((this.editedItem.entry - this.editedItem.stop_loss) /
-          this.editedItem.entry) *
-          this.editedItem.volume
-      );
-      return Math.floor(lose);
-    },
-    calcRate() {
-      let rate = 0;
-      rate = Math.abs(this.calcWin / this.calcLose);
-      return rate.toFixed(2);
-    },
+    // calcWin() {
+    //   let win = 0;
+    //   win = Math.abs(
+    //     ((this.editedItem.entry - this.editedItem.take_profit) /
+    //       this.editedItem.entry) *
+    //       this.editedItem.volume
+    //   );
+    //   return Math.floor(win);
+    // },
+    // calcLose() {
+    //   let lose = 0;
+    //   lose = -Math.abs(
+    //     ((this.editedItem.entry - this.editedItem.stop_loss) /
+    //       this.editedItem.entry) *
+    //       this.editedItem.volume
+    //   );
+    //   return Math.floor(lose);
+    // },
+    // calcRate() {
+    //   let rate = 0;
+    //   rate = Math.abs(this.calcWin / this.calcLose);
+    //   return rate.toFixed(2);
+    // },
   },
 
   watch: {
@@ -104,16 +145,17 @@ export default {
 
   created() {
     this.initData();
+    console.log(caculate(1000, 8, 14, 6, 4, true));
   },
- 
+
   methods: {
     async initData() {
       try {
         const querySnapshot = await getDocs(collection(db, "transaction"));
         querySnapshot.forEach((doc) => {
-          const item = doc.data()
-          this.desserts.push(generateData(doc.id,item))
-        })
+          const item = doc.data();
+          this.desserts.push(generateData(doc.id, item));
+        });
       } catch (error) {
         console.log(error);
       }
@@ -141,10 +183,10 @@ export default {
         position: this.editedItem.position,
       };
       try {
-        this.enableLoading();
+        await this.$store.dispatch("enableLoading");
         await addDoc(collection(db, "transaction"), objectNew);
         this.close();
-        this.disableLoading();
+        await this.$store.dispatch("disableLoading");
       } catch (error) {
         console.log(error);
       }
@@ -180,10 +222,10 @@ export default {
 
     async updateData(key, obj) {
       try {
-        this.enableLoading();
+        await this.$store.dispatch("enableLoading");
         const dbRef = doc(db, "transaction", key);
         await updateDoc(dbRef, obj);
-        this.disableLoading();
+        await this.$store.dispatch("disableLoading");
       } catch (error) {
         console.log(error);
       }

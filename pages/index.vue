@@ -14,9 +14,9 @@
         <v-chip
           label
           text-color="white"
-          :color="item.position === 'LONG' ? 'green' : 'red'"
+          :color="item.position === true ? 'green' : 'red'"
         >
-          {{ item.position }}
+          {{ item.position === true ? 'LONG' : 'SHORT' }}
         </v-chip>
       </template>
       <template #item.status="{ item }">
@@ -35,6 +35,11 @@
       <template #item.lose="{ item }">
         <div class="font-weight-bold red--text">
           {{ item.lose }}
+        </div>
+      </template>
+      <template #item.roe="{ item }">
+        <div :class=" (item.roe < 0) ? 'font-weight-bold red--text' : 'font-weight-bold red--text green--text' ">
+          {{ item.roe }}
         </div>
       </template>
       <template #top>
@@ -84,19 +89,19 @@
                     <v-col cols="12" sm="6" md="4">
                       R/R
                       <p class="font-weight-bold">
-                        {{ calcRate }}
+                        {{ caculate.rate }}
                       </p>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       WIN
                       <p class="font-weight-bold green--text">
-                        {{ calcWin }}
+                        {{ caculate.win }}
                       </p>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       LOSE
                       <p class="font-weight-bold red--text">
-                        {{ calcLose }}
+                        {{ caculate.lose }}
                       </p>
                     </v-col>
                   </v-row>
@@ -137,11 +142,11 @@
         <v-icon v-if="item.status" @click="editItem(item)">
           mdi-pencil
         </v-icon>
-        <v-icon class="mx-2" @click="deleteItem(item.id)">
-          mdi-delete
-        </v-icon>
         <v-icon v-if="item.status" @click="closeOrder(item.id)">
           mdi-close-octagon
+        </v-icon>
+        <v-icon class="mx-2" @click="deleteItem(item.id)">
+          mdi-delete
         </v-icon>
       </template>
     </v-data-table>
