@@ -1,5 +1,5 @@
 <template>
-  <v-row class="my-4">
+  <div class="ma-2">
     <v-dialog v-model="dialog" max-width="800px">
       <template #activator="{ on, attrs }">
         <v-btn color="primary" dark v-bind="attrs" v-on="on">
@@ -85,7 +85,7 @@
         </v-form>
       </v-card>
     </v-dialog>
-  </v-row>
+  </div>
 </template>
 <script>
 /* eslint-disable */

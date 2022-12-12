@@ -24,6 +24,7 @@ export default {
     dialog: false,
     dialogDelete: false,
     idDelete: null,
+    pnl: 0,
     headers: [
       {
         text: "Coin",
@@ -121,6 +122,9 @@ export default {
           const item = doc.data();
           this.desserts.push(generateData(doc.id, item));
         });
+        this.desserts.forEach((item) => {
+          this.pnl += item.roe;
+        });
       } catch (error) {
         console.log(error);
       }
@@ -169,6 +173,7 @@ export default {
         await deleteDoc(dbRef);
         await this.$store.dispatch("disableLoading");
         await this.closeDelete();
+        window.location.reload();
       } catch (error) {
         console.log(error);
       }
