@@ -20,6 +20,9 @@
                     :items="items"
                     label="Position"
                   />
+                  <v-alert v-show="checkRequire" dense outlined type="error">
+                    Require
+                  </v-alert>
                 </v-col>
               </v-row>
               <v-row>
@@ -51,19 +54,19 @@
                 <v-col cols="12" sm="6" md="4">
                   R/R
                   <p class="font-weight-bold">
-                    {{ calcRate }}
+                    {{ caculated.rate }}
                   </p>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   WIN
                   <p class="font-weight-bold green--text">
-                    {{ calcWin }}
+                    {{ caculated.win }}
                   </p>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   LOSE
                   <p class="font-weight-bold red--text">
-                    {{ calcLose }}
+                    {{ -caculated.lose }}
                   </p>
                 </v-col>
               </v-row>
@@ -86,14 +89,12 @@
 </template>
 <script>
 /* eslint-disable */
-import {
-  collection,
-  addDoc,
-} from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import db from "../plugins/firebase";
 export default {
   data: () => ({
     dialog: false,
+    errorSelect: false,
     defaultItem: {
       coin: null,
       id: null,
@@ -110,32 +111,66 @@ export default {
       date_start: new Date(),
       total: null,
     },
-    items: ["LONG", "SHORT"],
+    items: [
+      {
+        text: "LONG",
+        value: true,
+      },
+      {
+        text: "SHORT",
+        value: false,
+      },
+    ],
   }),
   computed: {
-    calcWin() {
-      let win = 0;
-      win = Math.abs(
-        ((this.defaultItem.entry - this.defaultItem.take_profit) /
-          this.defaultItem.entry) *
-          this.defaultItem.volume
-      );
-      return Math.floor(win);
+    caculated() {
+      // position = true => LONG
+      // position = false => SHORT
+
+      let win, lose, roe;
+      let vol = this.defaultItem.volume;
+      let entry = this.defaultItem.entry;
+      let tp = this.defaultItem.take_profit;
+      let sl = this.defaultItem.stop_loss;
+      let market = this.defaultItem.market;
+      let position;
+
+      if (this.defaultItem.position === "LONG") {
+        position = true;
+      } else {
+        position = false;
+      }
+
+      if (!market || market === 0) {
+        win = Math.abs(((entry - tp) / entry) * vol);
+        lose = Math.abs(((entry - sl) / entry) * vol);
+        roe = 0;
+      } else {
+        if (position === true) {
+          win = Math.abs(((entry - tp) / entry) * vol);
+          lose = ((sl - entry) / entry) * vol;
+          roe = ((market - entry) / entry) * vol;
+        } else {
+          win = Math.abs(((entry - tp) / entry) * vol);
+          lose = ((entry - sl) / entry) * vol;
+          roe = ((entry - market) / entry) * vol;
+        }
+      }
+
+      return {
+        win: Number(win.toFixed(2)),
+        lose: Number(lose.toFixed(2)),
+        roe: Number(roe.toFixed(2)),
+        rate: Number(Math.abs(win / lose).toFixed(2)),
+      };
     },
-    calcLose() {
-      let lose = 0;
-      lose = -Math.abs(
-        ((this.defaultItem.entry - this.defaultItem.stop_loss) /
-          this.defaultItem.entry) *
-          this.defaultItem.volume
-      );
-      return Math.floor(lose);
-    },
-    calcRate() {
-      let rate = 0;
-      rate = Math.abs(this.calcWin / this.calcLose);
-      return rate.toFixed(2);
-    },
+    checkRequire() {
+       if (this.defaultItem.position === null) {
+         return this.errorSelect = true;
+        } else {
+         return this.errorSelect = false;
+        }
+    }
   },
   methods: {
     close() {
@@ -146,18 +181,26 @@ export default {
         coin: this.defaultItem.coin,
         status: true,
         date_start: this.defaultItem.date_start,
-        entry: this.defaultItem.entry,
-        take_profit: this.defaultItem.take_profit,
-        stop_loss: this.defaultItem.stop_loss,
-        market: this.defaultItem.market ? this.defaultItem.market : 0,
-        volume: this.defaultItem.volume,
+        entry: Number(this.defaultItem.entry),
+        take_profit: Number(this.defaultItem.take_profit),
+        stop_loss: Number(this.defaultItem.stop_loss),
+        market: this.defaultItem.market
+          ? Number(this.defaultItem.market)
+          : null,
+        volume: Number(this.defaultItem.volume),
         position: this.defaultItem.position,
       };
       try {
-        await this.$store.dispatch("enableLoading");
-        await addDoc(collection(db, "transaction"), objectNew);
-        await this.close();
-        await this.$store.dispatch("disableLoading");
+        if (this.defaultItem.position === null) {
+          this.errorSelect = true;
+        } else {
+          this.errorSelect = false;
+        }
+        // await this.$store.dispatch("enableLoading");
+        // await addDoc(collection(db, "transaction"), objectNew);
+        // await this.close();
+        // await this.$store.dispatch("disableLoading");
+        // window.location.reload();
       } catch (error) {
         console.log(error);
       }

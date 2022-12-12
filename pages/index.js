@@ -1,13 +1,5 @@
 /* eslint-disable */
-import {
-  caculateMarket,
-  caculateRate,
-  caculateWin,
-  caculateLose,
-  convertTimestap,
-  generateData,
-  caculate,
-} from "@/plugins/caculate";
+import { generateData } from "@/plugins/caculate";
 import {
   collection,
   getDocs,
@@ -34,6 +26,7 @@ export default {
     idDelete: null,
     headers: [
       {
+        text: "Coin",
         align: "center",
         value: "coin",
         sortable: false,
@@ -53,6 +46,7 @@ export default {
       { text: "Actions", value: "actions", sortable: false },
     ],
     editedItem: {
+      id: null,
       coin: null,
       volume: null,
       entry: null,
@@ -69,7 +63,7 @@ export default {
   }),
 
   computed: {
-    caculate() {
+    caculated() {
       // position = true => LONG
       // position = false => SHORT
 
@@ -79,12 +73,7 @@ export default {
       let tp = this.editedItem.take_profit;
       let sl = this.editedItem.stop_loss;
       let market = this.editedItem.market;
-      let position;
-      if (this.editedItem.position === "LONG") {
-        position = true;
-      } else {
-        position = false;
-      }
+      let position = this.editedItem.position;
 
       if (!market || market === 0) {
         win = Math.abs(((entry - tp) / entry) * vol);
@@ -103,35 +92,12 @@ export default {
       }
 
       return {
-        win: Math.floor(win),
-        lose: Math.floor(lose),
-        roe: Math.floor(roe),
-        rate: Math.abs(win / lose).toFixed(2),
+        win: Number(win.toFixed(2)),
+        lose: Number(lose.toFixed(2)),
+        roe: Number(roe.toFixed(2)),
+        rate: Number(Math.abs(win / lose).toFixed(2)),
       };
     },
-    // calcWin() {
-    //   let win = 0;
-    //   win = Math.abs(
-    //     ((this.editedItem.entry - this.editedItem.take_profit) /
-    //       this.editedItem.entry) *
-    //       this.editedItem.volume
-    //   );
-    //   return Math.floor(win);
-    // },
-    // calcLose() {
-    //   let lose = 0;
-    //   lose = -Math.abs(
-    //     ((this.editedItem.entry - this.editedItem.stop_loss) /
-    //       this.editedItem.entry) *
-    //       this.editedItem.volume
-    //   );
-    //   return Math.floor(lose);
-    // },
-    // calcRate() {
-    //   let rate = 0;
-    //   rate = Math.abs(this.calcWin / this.calcLose);
-    //   return rate.toFixed(2);
-    // },
   },
 
   watch: {
@@ -145,7 +111,6 @@ export default {
 
   created() {
     this.initData();
-    console.log(caculate(1000, 8, 14, 6, 4, true));
   },
 
   methods: {
@@ -162,7 +127,6 @@ export default {
     },
 
     editItem(item) {
-      console.log(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
@@ -171,10 +135,10 @@ export default {
       return item.status === false ? "bg-disable" : "";
     },
     async saveItem() {
+      const key = this.editedItem.id;
       const objectNew = {
         coin: this.editedItem.coin,
         status: true,
-        date_start: this.editedItem.date_start,
         entry: this.editedItem.entry,
         take_profit: this.editedItem.take_profit,
         stop_loss: this.editedItem.stop_loss,
@@ -183,10 +147,12 @@ export default {
         position: this.editedItem.position,
       };
       try {
+        const dbRef = doc(db, "transaction", key);
         await this.$store.dispatch("enableLoading");
-        await addDoc(collection(db, "transaction"), objectNew);
+        await updateDoc(dbRef, objectNew);
         this.close();
         await this.$store.dispatch("disableLoading");
+        window.location.reload();
       } catch (error) {
         console.log(error);
       }
@@ -226,6 +192,7 @@ export default {
         const dbRef = doc(db, "transaction", key);
         await updateDoc(dbRef, obj);
         await this.$store.dispatch("disableLoading");
+        window.location.reload();
       } catch (error) {
         console.log(error);
       }

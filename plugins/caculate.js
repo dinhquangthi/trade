@@ -1,30 +1,6 @@
 /* eslint-disable */
 import { Timestamp } from "@firebase/firestore";
 
-export function caculateMarket(vol, entry, market) {
-  let total = 0;
-  if (market !== 0) {
-    total = Math.abs(((entry - market) / entry) * vol);
-  } else {
-    total = 0;
-  }
-  return Math.floor(total);
-}
-
-export function caculateRate(win, lose) {
-  return Math.abs(win / lose).toFixed(2);
-}
-
-export function caculateWin(vol, entry, tp) {
-  const win = Math.abs(((entry - tp) / entry) * vol);
-  return Math.floor(win);
-}
-export function caculateLose(vol, entry, sl) {
-  const lose = -Math.abs(((entry - sl) / entry) * vol);
-
-  return Math.floor(lose);
-}
-
 export function convertTimestap(sec, nano) {
   const datetime = new Timestamp(sec, nano).toDate();
   return datetime;
@@ -105,9 +81,9 @@ export function caculate(vol, entry, tp, sl, market, position) {
   }
 
   return {
-    win: Math.floor(win),
-    lose: Math.floor(lose),
-    roe: Math.floor(roe),
-    rate: Math.abs(win / lose).toFixed(2),
+    win: Number(win.toFixed(2)),
+    lose: Number(lose.toFixed(2)),
+    roe: Number(roe.toFixed(2)),
+    rate: Number(Math.abs(win / lose).toFixed(2)),
   };
 }

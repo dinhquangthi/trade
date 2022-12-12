@@ -34,7 +34,7 @@
       </template>
       <template #item.lose="{ item }">
         <div class="font-weight-bold red--text">
-          {{ item.lose }}
+          {{ (item.lose) }}
         </div>
       </template>
       <template #item.roe="{ item }">
@@ -89,19 +89,19 @@
                     <v-col cols="12" sm="6" md="4">
                       R/R
                       <p class="font-weight-bold">
-                        {{ caculate.rate }}
+                        {{ caculated.rate }}
                       </p>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       WIN
                       <p class="font-weight-bold green--text">
-                        {{ caculate.win }}
+                        {{ caculated.win }}
                       </p>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       LOSE
                       <p class="font-weight-bold red--text">
-                        {{ caculate.lose }}
+                        {{ caculated.lose }}
                       </p>
                     </v-col>
                   </v-row>
@@ -114,7 +114,7 @@
                   Cancel
                 </v-btn>
                 <v-btn color="blue darken-1" text @click="saveItem">
-                  Add
+                  Save
                 </v-btn>
               </v-card-actions>
             </v-form>
