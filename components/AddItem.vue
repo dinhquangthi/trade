@@ -165,12 +165,12 @@ export default {
       };
     },
     checkRequire() {
-       if (this.defaultItem.position === null) {
-         return this.errorSelect = true;
-        } else {
-         return this.errorSelect = false;
-        }
-    }
+      if (this.defaultItem.position === null) {
+        return (this.errorSelect = true);
+      } else {
+        return (this.errorSelect = false);
+      }
+    },
   },
   methods: {
     close() {
@@ -195,12 +195,12 @@ export default {
           this.errorSelect = true;
         } else {
           this.errorSelect = false;
+          await this.$store.dispatch("enableLoading");
+          await addDoc(collection(db, "transaction"), objectNew);
+          await this.close();
+          await this.$store.dispatch("disableLoading");
+          window.location.reload();
         }
-        // await this.$store.dispatch("enableLoading");
-        // await addDoc(collection(db, "transaction"), objectNew);
-        // await this.close();
-        // await this.$store.dispatch("disableLoading");
-        // window.location.reload();
       } catch (error) {
         console.log(error);
       }

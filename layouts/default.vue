@@ -4,7 +4,7 @@
       <v-progress-circular :size="70" :width="7" color="amber" indeterminate />
     </v-overlay>
     <v-main>
-      <v-container>
+      <v-container fluid>
         <Nuxt />
       </v-container>
     </v-main>

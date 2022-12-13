@@ -17,7 +17,7 @@
             text-color="white"
             large
           >
-            PNL:&nbsp;&nbsp;<span class="font-weight-bold">{{ pnl }} $</span>
+            PNL:&nbsp;&nbsp;<span class="font-weight-bold">{{ pnl.toFixed(3) }} $</span>
           </v-chip>
         </div>
       </div>
@@ -26,7 +26,7 @@
       <v-data-table
         :headers="headers"
         :items="desserts"
-        sort-by="date_start"
+        :sort-by="['date_start','status']"
         :item-class="itemRowBackground"
       >
         <template #item.position="{ item }">

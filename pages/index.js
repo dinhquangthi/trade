@@ -41,7 +41,7 @@ export default {
       { text: "R/R", value: "rate", sortable: false },
       { text: "WIN", value: "win", sortable: false },
       { text: "LOSE", value: "lose", sortable: false },
-      { text: "Status", value: "status", sortable: false },
+      { text: "Status", value: "status" },
       { text: "Day Start", value: "date_start" },
       { text: "ROE", value: "roe", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
