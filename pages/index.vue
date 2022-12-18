@@ -3,6 +3,9 @@
 <template>
   <v-card>
     <div>
+       <v-btn color="primary" @click="refreshData()" dark >
+        True
+        </v-btn>
       <div
         class="d-flex justify-space-between"
       >
@@ -26,8 +29,10 @@
       <v-data-table
         :headers="headers"
         :items="desserts"
-        :sort-by="['date_start','status']"
+        :sort-by="['status']"
+        :sort-desc="true"
         :item-class="itemRowBackground"
+        :itemsPerPage = 10
       >
         <template #item.position="{ item }">
           <v-chip

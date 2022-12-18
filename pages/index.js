@@ -117,6 +117,7 @@ export default {
   methods: {
     async initData() {
       try {
+        this.desserts = [];
         const querySnapshot = await getDocs(collection(db, "transaction"));
         querySnapshot.forEach((doc) => {
           const item = doc.data();
@@ -128,15 +129,7 @@ export default {
       } catch (error) {
         console.log(error);
       }
-    },
-
-    editItem(item) {
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-    },
-
-    itemRowBackground(item) {
-      return item.status === false ? "bg-disable" : "";
+      await this.$store.dispatch("disableRefresh");
     },
     async saveItem() {
       const key = this.editedItem.id;
@@ -156,14 +149,9 @@ export default {
         await updateDoc(dbRef, objectNew);
         this.close();
         await this.$store.dispatch("disableLoading");
-        window.location.reload();
       } catch (error) {
         console.log(error);
       }
-    },
-    deleteItem(item) {
-      this.idDelete = item;
-      this.dialogDelete = true;
     },
     async deleteItemConfirm() {
       const key = this.idDelete;
@@ -173,11 +161,35 @@ export default {
         await deleteDoc(dbRef);
         await this.$store.dispatch("disableLoading");
         await this.closeDelete();
-        window.location.reload();
       } catch (error) {
         console.log(error);
       }
     },
+    async updateData(key, obj) {
+      try {
+        await this.$store.dispatch("enableLoading");
+        const dbRef = doc(db, "transaction", key);
+        await updateDoc(dbRef, obj);
+        await this.$store.dispatch("disableLoading");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    editItem(item) {
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+    },
+
+    itemRowBackground(item) {
+      return item.status === false ? "bg-disable" : "";
+    },
+
+    deleteItem(item) {
+      this.idDelete = item;
+      this.dialogDelete = true;
+    },
+
     close() {
       this.dialog = false;
     },
@@ -189,18 +201,6 @@ export default {
     closeOrder(key, obj) {
       obj = { status: false };
       this.updateData(key, obj);
-    },
-
-    async updateData(key, obj) {
-      try {
-        await this.$store.dispatch("enableLoading");
-        const dbRef = doc(db, "transaction", key);
-        await updateDoc(dbRef, obj);
-        await this.$store.dispatch("disableLoading");
-        window.location.reload();
-      } catch (error) {
-        console.log(error);
-      }
     },
   },
 };
