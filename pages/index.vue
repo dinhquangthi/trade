@@ -3,9 +3,6 @@
 <template>
   <v-card>
     <div>
-       <v-btn color="primary" @click="refreshData()" dark >
-        True
-        </v-btn>
       <div
         class="d-flex justify-space-between"
       >
@@ -20,7 +17,7 @@
             text-color="white"
             large
           >
-            PNL:&nbsp;&nbsp;<span class="font-weight-bold">{{ pnl.toFixed(3) }} $</span>
+            PNL:&nbsp;&nbsp;<span class="font-weight-bold">{{ this.$store.state.pnl.toFixed(3) }} $</span>
           </v-chip>
         </div>
       </div>
@@ -28,7 +25,7 @@
 
       <v-data-table
         :headers="headers"
-        :items="desserts"
+        :items="getData"
         :sort-by="['status']"
         :sort-desc="true"
         :item-class="itemRowBackground"

@@ -2,9 +2,7 @@
   <div class="ma-2">
     <v-dialog v-model="dialog" max-width="800px">
       <template #activator="{ on, attrs }">
-        <v-btn color="primary" dark v-bind="attrs" v-on="on">
-          New Item
-        </v-btn>
+        <v-btn color="primary" dark v-bind="attrs" v-on="on"> New Item </v-btn>
       </template>
       <v-card>
         <v-form>
@@ -75,12 +73,8 @@
 
           <v-card-actions>
             <v-spacer />
-            <v-btn color="blue darken-1" text @click="close">
-              Cancel
-            </v-btn>
-            <v-btn color="blue darken-1" text @click="addNewItem">
-              Add
-            </v-btn>
+            <v-btn color="blue darken-1" text @click="close"> Cancel </v-btn>
+            <v-btn color="blue darken-1" text @click="addNewItem"> Add </v-btn>
           </v-card-actions>
         </v-form>
       </v-card>
@@ -198,8 +192,8 @@ export default {
           await this.$store.dispatch("enableLoading");
           await addDoc(collection(db, "transaction"), objectNew);
           await this.close();
+          await this.$store.dispatch("fetchData");
           await this.$store.dispatch("disableLoading");
-          window.location.reload();
         }
       } catch (error) {
         console.log(error);

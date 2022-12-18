@@ -24,7 +24,7 @@ export default {
     dialog: false,
     dialogDelete: false,
     idDelete: null,
-    pnl: 0,
+
     headers: [
       {
         text: "Coin",
@@ -58,7 +58,7 @@ export default {
       position: null,
       status: "",
     },
-    desserts: [],
+
     items: ["LONG", "SHORT"],
     menu: false,
   }),
@@ -99,6 +99,9 @@ export default {
         rate: Number(Math.abs(win / lose).toFixed(2)),
       };
     },
+    getData() {
+      return this.$store.state.desserts;
+    },
   },
 
   watch: {
@@ -111,26 +114,26 @@ export default {
   },
 
   created() {
-    this.initData();
+    this.$store.dispatch("fetchData");
   },
 
   methods: {
-    async initData() {
-      try {
-        this.desserts = [];
-        const querySnapshot = await getDocs(collection(db, "transaction"));
-        querySnapshot.forEach((doc) => {
-          const item = doc.data();
-          this.desserts.push(generateData(doc.id, item));
-        });
-        this.desserts.forEach((item) => {
-          this.pnl += item.roe;
-        });
-      } catch (error) {
-        console.log(error);
-      }
-      await this.$store.dispatch("disableRefresh");
-    },
+    // async initData() {
+    //   try {
+    //     this.desserts = [];
+    //     const querySnapshot = await getDocs(collection(db, "transaction"));
+    //     querySnapshot.forEach((doc) => {
+    //       const item = doc.data();
+    //       this.desserts.push(generateData(doc.id, item));
+    //     });
+    //     this.desserts.forEach((item) => {
+    //       this.pnl += item.roe;
+    //     });
+    //     await this.$store.dispatch("disableRefresh");
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // },
     async saveItem() {
       const key = this.editedItem.id;
       const objectNew = {
@@ -148,6 +151,7 @@ export default {
         await this.$store.dispatch("enableLoading");
         await updateDoc(dbRef, objectNew);
         this.close();
+        await this.$store.dispatch("fetchData");
         await this.$store.dispatch("disableLoading");
       } catch (error) {
         console.log(error);
@@ -159,6 +163,7 @@ export default {
         const dbRef = doc(db, "transaction", key);
         await this.$store.dispatch("enableLoading");
         await deleteDoc(dbRef);
+        await this.$store.dispatch("fetchData");
         await this.$store.dispatch("disableLoading");
         await this.closeDelete();
       } catch (error) {
@@ -170,6 +175,7 @@ export default {
         await this.$store.dispatch("enableLoading");
         const dbRef = doc(db, "transaction", key);
         await updateDoc(dbRef, obj);
+        await this.$store.dispatch("fetchData");
         await this.$store.dispatch("disableLoading");
       } catch (error) {
         console.log(error);
