@@ -50,7 +50,7 @@ export default {
   },
   server: {
     // host: '192.168.110.133',
-    // port: 4000
+    port: 4000,
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify

@@ -45,7 +45,7 @@ export function generateData(ids, item) {
     ).lose,
     position: item.position,
     status: item.status,
-    date_start: new Date(dateStart).toLocaleDateString("en-GB"),
+    date_start: new Date(dateStart).toLocaleDateString(),
     roe: caculate(
       item.volume,
       item.entry,
