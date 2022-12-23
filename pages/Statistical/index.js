@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { generateData } from "@/plugins/caculate";
+import { generateData, convertMonth } from "@/plugins/caculate";
 import {
   collection,
   getDocs,
@@ -464,16 +464,35 @@ export default {
 
   computed: {},
 
-  created() {
-    this.fetchData();
+  async created() {
+    await this.$store.dispatch("fetchData");
+    await this.createData();
+  },
+  async fetch() {
+    try {
+      let array = [];
+      const querySnapshot = await getDocs(collection(db, "statistical"));
+      querySnapshot.forEach((doc) => {
+        const item = doc.data();
+        array.push(item);
+      });
+      this.table = array.map((item) => {
+        return {
+          ...item,
+          id: convertMonth(item.id),
+          month: convertMonth(item.month),
+        };
+      });
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   methods: {
-    initData() {
+    createData() {
       let total_roe = 0;
       let num_win = 0;
       let num_lose = 0;
-      this.$store.dispatch("fetchData");
       let listArray = this.$store.state.desserts;
       const monthCurrent = new Date().getUTCMonth();
       const yearCurrent = new Date().getUTCFullYear();
@@ -489,39 +508,21 @@ export default {
           }
         }
       });
-
-      this.obj.id = `${monthCurrent}_${yearCurrent}`;
-      this.obj.month = `${monthCurrent}-${yearCurrent}`;
-      this.obj.roe = Number(total_roe);
+      this.obj.id = `${yearCurrent}_${monthCurrent}`;
+      this.obj.month = `${yearCurrent}-${monthCurrent}`;
+      this.obj.roe = Number(total_roe).toFixed(2);
       this.obj.percentage = `${num_win}/${num_lose}`;
+    },
 
+    initData() {
       this.handle();
     },
 
     async handle() {
       try {
-        console.log(this.obj.jd);
         await this.$store.dispatch("enableLoading");
         await setDoc(doc(db, "statistical", this.obj.id), this.obj);
-        await this.$store.dispatch("fetchData");
         await this.$store.dispatch("disableLoading");
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    async fetchData() {
-      try {
-        let arr = [];
-        const querySnapshot = await getDocs(collection(db, "statistical"));
-        querySnapshot.forEach((doc) => {
-          const item = doc.data();
-          arr.push(item);
-        });
-        // let newArr = arr.map((item) => {
-        //   return (item.id = item.id.split("_"));
-        // });
-        console.log(newArr);
       } catch (error) {
         console.log(error);
       }

@@ -87,3 +87,10 @@ export function caculate(vol, entry, tp, sl, market, position) {
     rate: Number(Math.abs(win / lose).toFixed(2)),
   };
 }
+export function convertMonth(ele) {
+  let year = Number(ele.split("-")[0]) || Number(ele.split("_")[0]);
+  let month = Number(ele.split("-")[1]) + 1 || Number(ele.split("_")[1]) + 1;
+  let newValue = `${year}-${String(month).padStart(2, "0")}`;
+
+  return newValue;
+}

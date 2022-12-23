@@ -3,7 +3,6 @@
 <template>
   <v-card>
     <div>
-        <v-btn href="/statistical" class="my-4" color="success" dark> Statistical </v-btn>
       <div class="d-flex justify-space-between">
         <div>
           <AddItem />
@@ -17,14 +16,14 @@
         </div>
       </div>
       <v-divider />
-      <div class="d-none">
+      <div class="">
         <v-data-table
           :headers="headers"
           :items="getData"
           :sort-by="['status']"
           :sort-desc="true"
           :item-class="itemRowBackground"
-          :itemsPerPage="10"
+          :itemsPerPage="5"
         >
           <template #item.position="{ item }">
             <v-chip

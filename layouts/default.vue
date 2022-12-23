@@ -5,6 +5,14 @@
     </v-overlay>
     <v-main>
       <v-container fluid>
+        <div class="d-flex mb-4">
+          <NuxtLink to="/" class="mx-4">
+            <v-btn>Home </v-btn>
+          </NuxtLink>
+          <NuxtLink to="/statistical" class="mx-4">
+            <v-btn>Statistical </v-btn>
+          </NuxtLink>
+        </div>
         <Nuxt />
       </v-container>
     </v-main>
@@ -12,10 +20,11 @@
 </template>
 
 <script>
+/* eslint-disable */
 export default {
-  name: 'DefaultLayout',
+  name: "DefaultLayout",
   data: () => ({
-    zIndex: 999
-  })
-}
+    zIndex: 999,
+  }),
+};
 </script>

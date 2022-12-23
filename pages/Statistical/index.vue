@@ -2,11 +2,12 @@
 
 <template>
   <div>
-    <v-btn href="/" class="my-4" color="primary" dark> Home </v-btn>
-    <v-btn @click="initData()" class="my-4" color="warning" dark>
-      Update Data
-    </v-btn>
-    <v-container>
+    <div class="head px-2 d-flex">
+      <v-btn @click="initData()" class="mb-2 ml-auto" color="warning" dark>
+        Update Data
+      </v-btn>
+    </div>
+    <v-container fluid>
       <v-card>
         <v-simple-table>
           <template v-slot:default>
@@ -20,8 +21,8 @@
             <tbody>
               <tr v-for="item in table" :key="item.name">
                 <td>{{ item.month }}</td>
-                <td>{{ item.roe }}</td>
-                <td>{{ item.percentage }}</td>
+                <td class="green--text font-weight-bold">{{ item.roe }} $</td>
+                <td class="font-weight-bold">{{ item.percentage }}</td>
               </tr>
             </tbody>
           </template>
