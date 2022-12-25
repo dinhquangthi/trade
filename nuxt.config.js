@@ -52,7 +52,9 @@ export default {
     // host: '192.168.110.133',
     port: 4000,
   },
-
+  generate: {
+    fallback: "404.html",
+  },
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ["~/assets/variables.scss"],
