@@ -15,6 +15,7 @@ import TimeLine from "@/components/TimeLine.vue";
 import AddItem from "@/components/AddItem.vue";
 
 export default {
+  layout: "default",
   components: {
     TimeLine,
     AddItem,

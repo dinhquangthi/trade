@@ -23,6 +23,7 @@
 /* eslint-disable */
 export default {
   name: "DefaultLayout",
+  layout: "default",
   data: () => ({
     zIndex: 999,
   }),
