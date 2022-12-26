@@ -9,9 +9,7 @@
         </div>
         <div>
           <v-chip class="ma-2" label color="green" text-color="white" large>
-            PNL:&nbsp;&nbsp;<span class="font-weight-bold"
-              >{{ this.$store.state.pnl.toFixed(3) }} $</span
-            >
+            PNL:&nbsp;&nbsp;<span class="font-weight-bold">{{ $store.state.pnl.toFixed(3) }} $</span>
           </v-chip>
         </div>
       </div>
@@ -23,7 +21,7 @@
           :sort-by="['status']"
           :sort-desc="true"
           :item-class="itemRowBackground"
-          :itemsPerPage="5"
+          :items-per-page="5"
         >
           <template #item.position="{ item }">
             <v-chip

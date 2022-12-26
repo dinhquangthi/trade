@@ -1,19 +1,9 @@
-/* eslint-disable */
-import { generateData, convertMonth } from "@/plugins/caculate";
-import {
-  collection,
-  getDocs,
-  addDoc,
-  setDoc,
-  doc,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
-import { Timestamp } from "@firebase/firestore";
-import db from "../../plugins/firebase";
+import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
+import db from '../../plugins/firebase'
+import { convertMonth } from '@/plugins/caculate'
 
 export default {
-  layout: "default",
+  layout: 'default',
   components: {},
 
   data: () => ({
@@ -22,79 +12,79 @@ export default {
       id: null,
       month: null,
       roe: 0,
-      percentage: 0,
-    },
+      percentage: 0
+    }
   }),
 
   computed: {},
 
-  async created() {
-    await this.$store.dispatch("fetchData");
-    await this.createData();
+  async created () {
+    await this.$store.dispatch('fetchData')
+    await this.createData()
   },
-  fetch() {
-    this.fetchData();
+  fetch () {
+    this.fetchData()
   },
 
   methods: {
-    createData() {
-      let total_roe = 0;
-      let num_win = 0;
-      let num_lose = 0;
-      let listArray = this.$store.state.desserts;
-      const monthCurrent = new Date().getUTCMonth();
-      const yearCurrent = new Date().getUTCFullYear();
+    createData () {
+      let totalRoe = 0
+      let numWin = 0
+      let numLose = 0
+      const listArray = this.$store.state.desserts
+      const monthCurrent = new Date().getUTCMonth()
+      const yearCurrent = new Date().getUTCFullYear()
       listArray.forEach((element) => {
-        let datetime = element.date_start;
-        let monthNumber = new Date(datetime).getUTCMonth();
+        const datetime = element.date_start
+        const monthNumber = new Date(datetime).getUTCMonth()
         if (monthNumber === monthCurrent) {
-          total_roe += element.roe;
+          totalRoe += element.roe
           if (element.roe > 0) {
-            num_win += 1;
+            numWin += 1
           } else {
-            num_lose += 1;
+            numLose += 1
           }
         }
-      });
-      this.obj.id = `${yearCurrent}_${monthCurrent}`;
-      this.obj.month = `${yearCurrent}-${monthCurrent}`;
-      this.obj.roe = Number(total_roe).toFixed(2);
-      this.obj.percentage = `${num_win}/${num_lose}`;
+      })
+      this.obj.id = `${yearCurrent}_${monthCurrent}`
+      this.obj.month = `${yearCurrent}-${monthCurrent}`
+      this.obj.roe = Number(totalRoe).toFixed(2)
+      this.obj.percentage = `${numWin}/${numLose}`
     },
 
-    async fetchData() {
+    async fetchData () {
       try {
-        let array = [];
-        const querySnapshot = await getDocs(collection(db, "statistical"));
+        const array = []
+        const querySnapshot = await getDocs(collection(db, 'statistical'))
         querySnapshot.forEach((doc) => {
-          const item = doc.data();
-          array.push(item);
-        });
+          const item = doc.data()
+          array.push(item)
+        })
         this.table = array.map((item) => {
           return {
             ...item,
             id: convertMonth(item.id),
-            month: convertMonth(item.month),
-          };
-        });
+            month: convertMonth(item.month)
+          }
+        })
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     },
 
-    initData() {
-      this.handle();
+    initData () {
+      this.handle()
     },
 
-    async handle() {
+    async handle () {
       try {
-        await this.$store.dispatch("enableLoading");
-        await setDoc(doc(db, "statistical", this.obj.id), this.obj);
-        await this.fetchData();
-        await this.$store.dispatch("disableLoading");
+        await this.$store.dispatch('enableLoading')
+        await setDoc(doc(db, 'statistical', this.obj.id), this.obj)
+        await this.fetchData()
+        await this.$store.dispatch('disableLoading')
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
-    },
-  },
-};
+    }
+  }
+}
