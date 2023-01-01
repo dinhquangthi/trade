@@ -28,8 +28,9 @@
                     (
                     {{
                       Number(
-                        (item.numWin - item.numLose) /
-                          (item.numWin + item.numLose)
+                        ((item.numWin - item.numLose) /
+                          (item.numWin + item.numLose)) *
+                          100
                       ).toFixed(2)
                     }}
                     )
