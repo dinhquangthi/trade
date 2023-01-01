@@ -10,7 +10,11 @@
             <v-container>
               <v-row>
                 <v-col cols="12" sm="6" md="6">
-                  <v-text-field v-model="defaultItem.coin" label="Coin" />
+                  <v-text-field
+                    :keydown="uppercase()"
+                    v-model="defaultItem.coin"
+                    label="Coin"
+                  />
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-select
@@ -167,6 +171,12 @@ export default {
     },
   },
   methods: {
+    uppercase() {
+      if (this.defaultItem.coin) {
+        this.defaultItem.coin = this.defaultItem.coin.toUpperCase();
+        console.log(this.defaultItem.coin);
+      }
+    },
     close() {
       this.dialog = false;
     },
