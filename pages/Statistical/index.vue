@@ -23,17 +23,22 @@
                 <td>{{ item.month }}</td>
                 <td class="green--text font-weight-bold">{{ item.roe }} $</td>
                 <td class="font-weight-bold">
-                  {{ item.numWin }}/{{ item.numLose }}
-                  <span class="mx-2 caption font-weight-bold">
-                    (
-                    {{
+                  <span class="green--text">
+                    {{ item.numWin }}
+                  </span>
+                  /
+                  <span class="red--text">
+                    {{ item.numLose }}
+                  </span>
+
+                  <span class="mx-2 caption font-weight-regular">
+                    ({{
                       Number(
                         ((item.numWin - item.numLose) /
                           (item.numWin + item.numLose)) *
                           100
                       ).toFixed(2)
-                    }}
-                    )
+                    }}%)
                   </span>
                 </td>
               </tr>

@@ -7,10 +7,10 @@
       <v-container fluid>
         <div class="d-flex mb-4">
           <NuxtLink to="/" class="mx-4">
-            <v-btn>Home </v-btn>
+            <v-btn class="warning">Home </v-btn>
           </NuxtLink>
           <NuxtLink to="/statistical" class="mx-4">
-            <v-btn>Statistical </v-btn>
+            <v-btn class="warning">Statistical </v-btn>
           </NuxtLink>
         </div>
         <Nuxt />
