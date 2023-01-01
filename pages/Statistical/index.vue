@@ -21,7 +21,15 @@
             <tbody>
               <tr v-for="item in table" :key="item.name">
                 <td>{{ item.month }}</td>
-                <td class="green--text font-weight-bold">{{ item.roe }} $</td>
+                <td
+                  :class="
+                    item.roe < 0
+                      ? 'font-weight-bold red--text'
+                      : 'font-weight-bold red--text green--text'
+                  "
+                >
+                  {{ item.roe }} $
+                </td>
                 <td class="font-weight-bold">
                   <span class="green--text">
                     {{ item.numWin }}
