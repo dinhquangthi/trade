@@ -42,7 +42,7 @@ export default {
           totalRoe += element.roe;
           if (element.roe > 0) {
             this.obj.numWin += 1;
-          } else {
+          } else if (element.roe < 0) {
             this.obj.numLose += 1;
           }
         }
